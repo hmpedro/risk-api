@@ -29,16 +29,16 @@ class DogController {
     };
   }
 
-  async retrieveById({ body }) {
-    const dogValues = { ...body };
+  async retrieveById({ params }) {
+    const { dogId } = params;
 
-    const valid = this.dogInputValidators.create(dogValues);
+    const valid = this.dogInputValidators.retrieveById(params);
 
     if (!valid) {
-      throw new InvalidFormatError({ message: this.dogInputValidators.create.errors });
+      throw new InvalidFormatError({ message: this.dogInputValidators.retrieveById.errors });
     }
 
-    const dog = await this.dogService.create({ dogValues });
+    const dog = await this.dogService.retrieveById(dogId);
 
     return {
       status: httpConstants.HTTP_STATUS_CREATED,
@@ -72,41 +72,36 @@ class DogController {
     };
   }
 
-  async update({ body }) {
+  async update({ params, body }) {
+    const { dogId } = params;
     const dogValues = { ...body };
 
-    const valid = this.dogInputValidators.create(dogValues);
+    const valid = this.dogInputValidators.update({ dogId, ...dogValues });
 
     if (!valid) {
-      throw new InvalidFormatError({ message: this.dogInputValidators.create.errors });
+      throw new InvalidFormatError({ message: this.dogInputValidators.update.errors });
     }
 
-    const dog = await this.dogService.create({ dogValues });
+    await this.dogService.update(dogId, dogValues);
 
     return {
-      status: httpConstants.HTTP_STATUS_CREATED,
-      body: {
-        dog,
-      },
+      status: httpConstants.HTTP_STATUS_NO_CONTENT,
     };
   }
 
-  async delete({ body }) {
-    const dogValues = { ...body };
+  async delete({ params }) {
+    const { dogId } = params;
 
-    const valid = this.dogInputValidators.create(dogValues);
+    const valid = this.dogInputValidators.retrieveById(params);
 
     if (!valid) {
-      throw new InvalidFormatError({ message: this.dogInputValidators.create.errors });
+      throw new InvalidFormatError({ message: this.dogInputValidators.retrieveById.errors });
     }
 
-    const dog = await this.dogService.create({ dogValues });
+    await this.dogService.delete(dogId);
 
     return {
-      status: httpConstants.HTTP_STATUS_CREATED,
-      body: {
-        dog,
-      },
+      status: httpConstants.HTTP_STATUS_NO_CONTENT,
     };
   }
 }

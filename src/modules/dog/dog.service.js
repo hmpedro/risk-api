@@ -5,8 +5,8 @@ class DogService {
     this.dogRepository = dogRepository;
   }
 
-  async retrieve(filters) {
-    return this.dogRepository.retrieve(filters);
+  async retrieve({ filterValues, pagination }) {
+    return this.dogRepository.retrieve({ filterValues, pagination });
   }
 
   async retrieveById(dogId) {
