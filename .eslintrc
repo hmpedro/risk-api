@@ -1,0 +1,19 @@
+{
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es2021": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "airbnb"
+  ],
+  "parserOptions": {
+    "ecmaVersion": "latest"
+  },
+  "rules": {
+    "no-console": "off",
+    "no-use-before-define": "off",
+    "max-len": ["error", { "code": 120 }]
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "name": "nodejs-base",
+  "version": "0.0.1",
+  "description": "Base structure to create a NodeJS project",
+  "main": "server.js",
+  "scripts": {
+    "lint": "eslint --fix ./src",
+    "start": "node ./src/server.js",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hmpedro/nodejs-base.git"
+  },
+  "keywords": [
+    "nodejs",
+    "base",
+    "structure"
+  ],
+  "author": "Pedro Henrique Mognon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hmpedro/nodejs-base/issues"
+  },
+  "homepage": "https://github.com/hmpedro/nodejs-base#readme",
+  "dependencies": {
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "express": "^4.17.3",
+    "helmet": "^5.0.2",
+    "http-errors": "^2.0.0"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.0",
+    "eslint": "^8.9.0",
+    "eslint-config-airbnb": "^19.0.4"
+  }
+}
