@@ -1,7 +1,15 @@
 const { constants: httpConstants } = require('http2');
 
+/**
+ * @typedef HealthController
+ */
 class HealthController {
-  constructor() {
+  /**
+   * @constructor
+   * @param { { name: string, provider: string, serviceInstance: { healthCheck: function } } } coreServices
+   */
+  constructor(coreServices) {
+    this.coreServices = coreServices;
     this.check = this.check.bind(this);
   }
 
@@ -9,26 +17,8 @@ class HealthController {
     const runningServices = [];
     const notRunningServices = [];
 
-    /**
-		 * TODO: Add your external and internal services that your application depends to work.
-		 * Every dependency should be wrapped in a local implementation and have it's own health check function.
-		 *
-		 */
-
-    const coreMetrics = [
-      {
-        name: 'database',
-        provider: 'NodeJS-base',
-        serviceInstance: {
-          async healthCheck() {
-            return Promise.resolve({ health: true });
-          },
-        },
-      },
-    ];
-
-    for (let i = 0; i < coreMetrics.length; i += 1) {
-      const { name, provider, serviceInstance } = coreMetrics[i];
+    for (let i = 0; i < this.coreServices.length; i += 1) {
+      const { name, provider, serviceInstance } = this.coreServices[i];
 
       try {
         // eslint-disable-next-line no-await-in-loop
