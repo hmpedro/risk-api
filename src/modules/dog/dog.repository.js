@@ -19,13 +19,15 @@ class DogRepository {
    * @return { Promise<*> }
    */
   async retrieve(filterValues = {}, pagination = {}) {
+    const dbConnection = this.db.getDbConnection();
+
     const queryPagination = {
       ...{ limit: 10, offset: 0 },
       ...pagination,
     };
 
     try {
-      return this.db.find({ filters: filterValues, pagination: queryPagination });
+      return dbConnection.find({ filters: filterValues, pagination: queryPagination });
     } catch (e) {
       throw new DatabaseError({ message: e.message });
     }
@@ -37,8 +39,10 @@ class DogRepository {
    * @return { Promise<*> }
    */
   async retrieveById(dogId) {
+    const dbConnection = this.db.getDbConnection();
+
     try {
-      return this.db.find({ id: dogId });
+      return dbConnection.find({ id: dogId });
     } catch (e) {
       throw new DatabaseError({ message: e.message });
     }
@@ -50,8 +54,10 @@ class DogRepository {
    * @return {Promise<*|undefined|(*&{createdAt: number, id: number, updatedAt: number})>}
    */
   async insert(dog) {
+    const dbConnection = this.db.getDbConnection();
+
     try {
-      return this.db.insert(dog);
+      return dbConnection.insert(dog);
     } catch (e) {
       throw new DatabaseError({ message: e.message });
     }
@@ -64,8 +70,10 @@ class DogRepository {
    * @return { Promise<*|undefined|(*&{createdAt: number, id: number, updatedAt: number})> }
    */
   async update(dogId, dog) {
+    const dbConnection = this.db.getDbConnection();
+
     try {
-      return this.db.update(dogId, dog);
+      return dbConnection.update(dogId, dog);
     } catch (e) {
       throw new DatabaseError({ message: e.message });
     }
@@ -77,8 +85,10 @@ class DogRepository {
    * @return {Promise<boolean>}
    */
   async delete(dogId) {
+    const dbConnection = this.db.getDbConnection();
+
     try {
-      return this.db.delete(dogId);
+      return dbConnection.delete(dogId);
     } catch (e) {
       throw new DatabaseError({ message: e.message });
     }
