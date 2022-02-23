@@ -3,7 +3,6 @@ const DogController = require('../dog.controller');
 const { dogServiceFactory } = require('./dog.service.factory');
 
 const dogService = dogServiceFactory();
-
 const ajv = new Ajv({ coerceTypes: true });
 
 const retrieveFilterSchema = {
@@ -12,6 +11,8 @@ const retrieveFilterSchema = {
     name: { type: 'string' },
     colors: { type: 'array', items: { type: 'string' }, uniqueItems: true },
     breed: { type: 'string' },
+    limit: { type: 'integer' },
+    offset: { type: 'integer' },
   },
 };
 

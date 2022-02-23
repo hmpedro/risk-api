@@ -1,12 +1,25 @@
 const { constants: httpConstants } = require('http2');
 const { InvalidFormatError } = require('../../utils/errors');
 
+/**
+ * @typedef DogController
+ */
 class DogController {
+  /**
+   * @constructor
+   * @param { DogService} dogService
+   * @param { { string: ValidateFunction } } dogInputValidators
+   */
   constructor(dogService, dogInputValidators) {
     this.dogService = dogService;
     this.dogInputValidators = dogInputValidators;
   }
 
+  /**
+   * @name retrieve
+   * @param { {} } query
+   * @return { Promise<{ body: { dogs: Array<Dog> }, status: number }> }
+   */
   async retrieve({ query }) {
     const valid = this.dogInputValidators.retrieve(query);
 
@@ -29,6 +42,11 @@ class DogController {
     };
   }
 
+  /**
+   * @name retrieveById
+   * @param params
+   * @return { Promise<{ body: { dog: Dog }, status: number }> }
+   */
   async retrieveById({ params }) {
     const { dogId } = params;
 
@@ -48,6 +66,11 @@ class DogController {
     };
   }
 
+  /**
+   * @name create
+   * @param { {} } body
+   * @return { Promise<{ body: { dog: Dog }, status: number }> }
+   */
   async create({ body }) {
     const dogValues = { ...body };
 
@@ -72,6 +95,12 @@ class DogController {
     };
   }
 
+  /**
+   * @name update
+   * @param { { dogId: number } } params
+   * @param { {} } body
+   * @return { Promise<{ status: number }> }
+   */
   async update({ params, body }) {
     const { dogId } = params;
     const dogValues = { ...body };
@@ -89,6 +118,11 @@ class DogController {
     };
   }
 
+  /**
+   * @name delete
+   * @param { { dogId: number } } params
+   * @return { Promise<{ status: number }> }
+   */
   async delete({ params }) {
     const { dogId } = params;
 
