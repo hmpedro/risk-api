@@ -31,7 +31,19 @@ class RiskController {
       };
     }
 
-    const analyseResult = this.riskService.analyse(body);
+    const personData = {
+      age: body.age,
+      dependents: body.dependents,
+      income: body.income,
+      maritalStatus: body.maritalStatus,
+      riskQuestions: body.risk_questions,
+      house: body.house ? {
+        ownershipStatus: body.house.ownership_status,
+      } : null,
+      vehicle: body.vehicle,
+    };
+
+    const analyseResult = this.riskService.analyse(personData);
 
     return {
       status: httpConstants.HTTP_STATUS_OK,

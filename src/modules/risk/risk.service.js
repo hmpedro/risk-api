@@ -3,6 +3,7 @@
  */
 class RiskService {
   /**
+   * @name analyse
    * @return {{auto: string, disability: string, life: string, home: string}}
    */
   analyse({

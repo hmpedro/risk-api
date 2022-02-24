@@ -50,6 +50,13 @@ const analyseSchema = {
       },
     },
   },
+  required: [
+    'age',
+    'dependents',
+    'income',
+    'marital_status',
+    'risk_questions',
+  ],
 };
 
 const validators = {
