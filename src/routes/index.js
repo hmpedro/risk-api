@@ -1,10 +1,10 @@
 const { Router } = require('express');
-const v1Router = require('./v1');
+const riskRouter = require('../modules/risk/risk.routes');
 const healthRouter = require('../modules/health/health.routes');
 
 const router = Router();
 
-router.use('/v1', v1Router);
+router.use('/risk', riskRouter);
 router.use('/health', healthRouter);
 
 module.exports = router;

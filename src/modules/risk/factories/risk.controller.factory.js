@@ -1,0 +1,59 @@
+const Ajv = require('ajv');
+const RiskController = require('../risk.controller');
+const { riskServiceFactory } = require('./risk.service.factory');
+
+const riskService = riskServiceFactory();
+const ajv = new Ajv({ coerceTypes: true });
+
+const analyseSchema = {
+  type: 'object',
+  properties: {
+    age: {
+      type: 'integer',
+      minimum: 0,
+    },
+    dependents: {
+      type: 'integer',
+      minimum: 0,
+    },
+    house: {
+      type: 'object',
+      properties: {
+        ownership_status: {
+          type: 'string',
+        },
+      },
+    },
+    income: {
+      type: 'integer',
+      minimum: 0,
+    },
+    marital_status: {
+      type: 'string',
+      enum: ['single', 'married'],
+    },
+    risk_questions: {
+      type: 'array',
+      items: {
+        type: 'boolean',
+      },
+      maxItems: 3,
+      minItems: 3,
+    },
+    vehicle: {
+      type: 'object',
+      properties: {
+        year: {
+          type: 'integer',
+          maximum: new Date(Date.now()).getFullYear() + 1,
+        },
+      },
+    },
+  },
+};
+
+const validators = {
+  analyse: ajv.compile(analyseSchema),
+};
+
+exports.riskControllerFactory = () => new RiskController(riskService, validators);
