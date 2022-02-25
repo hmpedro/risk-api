@@ -1,6 +1,5 @@
 {
   "env": {
-    "browser": true,
     "commonjs": true,
     "es2021": true
   },
@@ -12,6 +11,7 @@
     "ecmaVersion": "latest"
   },
   "rules": {
+    "class-methods-use-this": "warn",
     "no-console": "off",
     "no-use-before-define": "off",
     "no-unused-vars": "warn",

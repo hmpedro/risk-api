@@ -3,10 +3,10 @@
  */
 class RiskService {
   /**
-   * @name analyse
+   * @name analyze
    * @return {{auto: string, disability: string, life: string, home: string}}
    */
-  analyse({
+  analyze({
     age, dependents, house, income, maritalStatus, riskQuestions, vehicle,
   }) {
     const baseScore = riskQuestions.reduce((sum, currentVal) => sum + currentVal, 0);
@@ -30,15 +30,7 @@ class RiskService {
       autoScore += 1;
     }
 
-    if (age < 30) {
-      autoScore -= 2;
-    } else if (age >= 30 && age < 40) {
-      autoScore -= 1;
-    }
-
-    if (income > 200000) {
-      autoScore -= 1;
-    }
+    autoScore += this.basicRiskCalculation(age, income);
 
     return autoScore;
   }
@@ -62,15 +54,7 @@ class RiskService {
       disabilityScore -= 1;
     }
 
-    if (age < 30) {
-      disabilityScore -= 2;
-    } else if (age >= 30 && age < 40) {
-      disabilityScore -= 1;
-    }
-
-    if (income > 200000) {
-      disabilityScore -= 1;
-    }
+    disabilityScore += this.basicRiskCalculation(age, income);
 
     return disabilityScore;
   }
@@ -86,15 +70,7 @@ class RiskService {
       homeScore += 1;
     }
 
-    if (age < 30) {
-      homeScore -= 2;
-    } else if (age >= 30 && age < 40) {
-      homeScore -= 1;
-    }
-
-    if (income > 200000) {
-      homeScore -= 1;
-    }
+    homeScore += this.basicRiskCalculation(age, income);
 
     return homeScore;
   }
@@ -114,17 +90,26 @@ class RiskService {
       lifeScore += 1;
     }
 
+    lifeScore += this.basicRiskCalculation(age, income);
+
+    return lifeScore;
+  }
+
+  basicRiskCalculation(age, income) {
+    let score = 0;
+
     if (age < 30) {
-      lifeScore -= 2;
-    } if (age >= 30 && age < 40) {
-      lifeScore -= 1;
+      score -= 2;
+    }
+    if (age >= 30 && age < 40) {
+      score -= 1;
     }
 
     if (income > 200000) {
-      lifeScore -= 1;
+      score -= 1;
     }
 
-    return lifeScore;
+    return score;
   }
 }
 

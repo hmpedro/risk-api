@@ -12,21 +12,23 @@ class RiskController {
   constructor(riskService, riskInputValidators) {
     this.riskService = riskService;
     this.riskInputValidators = riskInputValidators;
+
+    this.analyze = this.analyze.bind(this);
   }
 
   /**
-   * @name retrieve
+   * @name analyze
    * @param { { } } body
    * @return { Promise<{ body: { auto, disability, home, life }, status: number }> }
    */
-  async analyse({ body }) {
-    const valid = this.riskInputValidators.analyse(body);
+  async analyze({ body }) {
+    const valid = this.riskInputValidators.analyzeInputs(body);
 
     if (!valid) {
       return {
         status: httpConstants.HTTP_STATUS_BAD_REQUEST,
         body: {
-          errors: this.riskInputValidators.analyse.errors,
+          errors: this.riskInputValidators.analyzeInputs.errors,
         },
       };
     }
@@ -43,12 +45,12 @@ class RiskController {
       vehicle: body.vehicle,
     };
 
-    const analyseResult = this.riskService.analyse(personData);
+    const analyseResult = this.riskService.analyze(personData);
 
     return {
       status: httpConstants.HTTP_STATUS_OK,
       body: {
-        ...analyseResult,
+        insuranceAnalysis: analyseResult,
       },
     };
   }

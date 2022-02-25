@@ -6,6 +6,6 @@ const riskController = riskControllerFactory();
 
 const router = express.Router();
 
-router.post('/', expressRouteAdapter({ routeHandler: riskController.analyse }));
+router.post('/analyze', expressRouteAdapter({ routeHandler: riskController.analyze }));
 
 module.exports = router;

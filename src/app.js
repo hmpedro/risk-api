@@ -30,12 +30,12 @@ class AppController {
     this.express.use(errorHandler);
   }
 
-  static async initDbConnection() {
+  async initDbConnection() {
     console.log('Initiate the connection with your database, like Postgres, MySQL, etc.');
     return Promise.resolve();
   }
 
-  static async initCacheConnection() {
+  async initCacheConnection() {
     console.log('Initiate the connection with your caching tool, like Redis.');
     return Promise.resolve();
   }

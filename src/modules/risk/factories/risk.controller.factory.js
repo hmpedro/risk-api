@@ -5,7 +5,7 @@ const { riskServiceFactory } = require('./risk.service.factory');
 const riskService = riskServiceFactory();
 const ajv = new Ajv({ coerceTypes: true });
 
-const analyseSchema = {
+const analyzeSchema = {
   type: 'object',
   properties: {
     age: {
@@ -60,7 +60,7 @@ const analyseSchema = {
 };
 
 const validators = {
-  analyse: ajv.compile(analyseSchema),
+  analyzeInputs: ajv.compile(analyzeSchema),
 };
 
 exports.riskControllerFactory = () => new RiskController(riskService, validators);
