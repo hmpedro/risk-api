@@ -11,11 +11,24 @@ class RiskService {
   }) {
     const baseScore = riskQuestions.reduce((sum, currentVal) => sum + currentVal, 0);
     return {
-      auto: this.calculateAutoInsurance(baseScore, vehicle, age, income),
-      disability: this.calculateDisabilityInsurance(baseScore, income, age, house, dependents, maritalStatus),
-      home: this.calculateHomeInsurance(baseScore, house, age, income),
-      life: this.calculateLifeInsurance(baseScore, income, age, dependents, maritalStatus),
+      auto: this.evaluateScoreResponse(this.calculateAutoInsurance(baseScore, vehicle, age, income)),
+      // eslint-disable-next-line max-len
+      disability: this.evaluateScoreResponse(this.calculateDisabilityInsurance(baseScore, income, age, house, dependents, maritalStatus)),
+      home: this.evaluateScoreResponse(this.calculateHomeInsurance(baseScore, house, age, income)),
+      life: this.evaluateScoreResponse(this.calculateLifeInsurance(baseScore, income, age, dependents, maritalStatus)),
     };
+  }
+
+  evaluateScoreResponse(score) {
+    if (score < 1) {
+      return 'economic';
+    }
+
+    if (score >= 1 && score <= 2) {
+      return 'regular';
+    }
+
+    return 'responsible';
   }
 
   calculateAutoInsurance(baseScore, vehicle, age, income) {
