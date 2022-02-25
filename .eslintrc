@@ -3,6 +3,9 @@
     "commonjs": true,
     "es2021": true
   },
+  "globals": {
+    "jest": true
+  },
   "extends": [
     "eslint:recommended",
     "airbnb"

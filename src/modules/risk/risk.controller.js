@@ -21,7 +21,7 @@ class RiskController {
    * @param { { } } body
    * @return { Promise<{ body: { auto, disability, home, life }, status: number }> }
    */
-  async analyze({ body }) {
+  analyze({ body }) {
     const valid = this.riskInputValidators.analyzeInputs(body);
 
     if (!valid) {
