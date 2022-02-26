@@ -24,4 +24,19 @@ describe('RiskController tests', () => {
     expect(response.body).toBeDefined();
     expect(response.body.insuranceAnalysis).toBeDefined();
   });
+
+  it('Should return bad request error when input is invalid', () => {
+    const request = {
+      body: {
+        foo: 'bar',
+      },
+    };
+
+    const response = riskController.analyze(request);
+
+    expect(response).toBeDefined();
+    expect(response.status).toBe(httpConstants.HTTP_STATUS_BAD_REQUEST);
+    expect(response.body).toBeDefined();
+    expect(response.body.errors).toBeDefined();
+  });
 });
