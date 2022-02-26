@@ -31,6 +31,15 @@ describe('RiskService tests', () => {
     expect(typeof insuranceAnalysis.life).toBe('string');
   });
 
+  it('should return correct evaluated insurance when ', () => {
+    const insuranceAnalysis = riskService.analyze(personData);
+
+    expect(insuranceAnalysis.auto).toBe('regular');
+    expect(insuranceAnalysis.disability).toBe('regular');
+    expect(insuranceAnalysis.home).toBe('regular');
+    expect(insuranceAnalysis.life).toBe('responsible');
+  });
+
   // eslint-disable-next-line max-len
   it('should return ineligible for disability, auto, and home insurance when doesnt have income, vehicles or houses respectively', () => {
     personData.income = 0;
@@ -53,12 +62,47 @@ describe('RiskService tests', () => {
     expect(insuranceAnalysis.life).toBe('ineligible');
   });
 
-  it('should return correct evaluated insurance', () => {
+  it('should evaluate economic string when score is less then 1', () => {
+    const evaluatedString = riskService.evaluateScoreResponse(0);
+
+    expect(evaluatedString).toBe('economic');
+  });
+
+  it('should evaluate regular string when score is between 1 and 2, including 1 and 2', () => {
+    const evaluatedString = riskService.evaluateScoreResponse(1);
+
+    expect(evaluatedString).toBe('regular');
+  });
+
+  it('should evaluate responsible string when score is greater than 2', () => {
+    const evaluatedString = riskService.evaluateScoreResponse(3);
+
+    expect(evaluatedString).toBe('responsible');
+  });
+
+  it('should increase risk when house ownershipStatus is mortgaged ', () => {
+    personData.riskQuestions = [1, 1, 1];
+    personData.house.ownershipStatus = 'mortgaged';
     const insuranceAnalysis = riskService.analyze(personData);
 
-    expect(insuranceAnalysis.auto).toBe('regular');
-    expect(insuranceAnalysis.disability).toBe('regular');
-    expect(insuranceAnalysis.home).toBe('regular');
-    expect(insuranceAnalysis.life).toBe('responsible');
+    expect(insuranceAnalysis.home).toBe('responsible');
+  });
+
+  it('should return reduce 2 when age is less than 30 for basic risk calculation ', () => {
+    const basicRiskResult = riskService.basicRiskCalculation(29, 1);
+
+    expect(basicRiskResult).toBe(-2);
+  });
+
+  it('should return reduce 1 when age is between 30(including 30) and 40 for basic risk calculation ', () => {
+    const basicRiskResult = riskService.basicRiskCalculation(30, 1);
+
+    expect(basicRiskResult).toBe(-1);
+  });
+
+  it('should return reduce 1 when income is greater then 200,000', () => {
+    const basicRiskResult = riskService.basicRiskCalculation(50, 200001);
+
+    expect(basicRiskResult).toBe(-1);
   });
 });
