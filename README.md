@@ -2,16 +2,16 @@
 An `express` API application to evaluate the insurance risk based on user data.
 
 ## Running
-Run application
+Run application  
 `npm start`
 
-Run on development
+Run on development  
 `npm run dev`
 
-Run tests
+Run tests  
 `npm run test`
 
-Run lint
+Run lint  
 `npm run lint`
 
 ## TODO
