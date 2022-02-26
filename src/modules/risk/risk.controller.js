@@ -37,7 +37,7 @@ class RiskController {
       age: body.age,
       dependents: body.dependents,
       income: body.income,
-      maritalStatus: body.maritalStatus,
+      maritalStatus: body.marital_status,
       riskQuestions: body.risk_questions,
       house: body.house ? {
         ownershipStatus: body.house.ownership_status,

@@ -11,27 +11,15 @@ class RiskService {
   }) {
     const baseScore = riskQuestions.reduce((sum, currentVal) => sum + currentVal, 0);
     return {
-      auto: this.evaluateScoreResponse(this.calculateAutoInsurance(baseScore, vehicle, age, income)),
+      auto: this.evaluateAutoInsurance(baseScore, vehicle, age, income),
       // eslint-disable-next-line max-len
-      disability: this.evaluateScoreResponse(this.calculateDisabilityInsurance(baseScore, income, age, house, dependents, maritalStatus)),
-      home: this.evaluateScoreResponse(this.calculateHomeInsurance(baseScore, house, age, income)),
-      life: this.evaluateScoreResponse(this.calculateLifeInsurance(baseScore, income, age, dependents, maritalStatus)),
+      disability: this.evaluateDisabilityInsurance(baseScore, income, age, house, dependents, maritalStatus),
+      home: this.evaluateHomeInsurance(baseScore, house, age, income),
+      life: this.evaluateLifeInsurance(baseScore, income, age, dependents, maritalStatus),
     };
   }
 
-  evaluateScoreResponse(score) {
-    if (score < 1) {
-      return 'economic';
-    }
-
-    if (score >= 1 && score <= 2) {
-      return 'regular';
-    }
-
-    return 'responsible';
-  }
-
-  calculateAutoInsurance(baseScore, vehicle, age, income) {
+  evaluateAutoInsurance(baseScore, vehicle, age, income) {
     let autoScore = 0 + baseScore;
 
     if (!vehicle) {
@@ -45,17 +33,17 @@ class RiskService {
 
     autoScore += this.basicRiskCalculation(age, income);
 
-    return autoScore;
+    return this.evaluateScoreResponse(autoScore);
   }
 
-  calculateDisabilityInsurance(baseScore, income, age, house, dependents, maritalStatus) {
+  evaluateDisabilityInsurance(baseScore, income, age, house, dependents, maritalStatus) {
     let disabilityScore = 0 + baseScore;
 
     if (income === 0 || age > 60) {
       return 'ineligible';
     }
 
-    if (house.ownershipStatus === 'mortgaged') {
+    if (house?.ownershipStatus === 'mortgaged') {
       disabilityScore += 1;
     }
 
@@ -69,10 +57,10 @@ class RiskService {
 
     disabilityScore += this.basicRiskCalculation(age, income);
 
-    return disabilityScore;
+    return this.evaluateScoreResponse(disabilityScore);
   }
 
-  calculateHomeInsurance(baseScore, house, age, income) {
+  evaluateHomeInsurance(baseScore, house, age, income) {
     let homeScore = 0 + baseScore;
 
     if (!house) {
@@ -85,10 +73,10 @@ class RiskService {
 
     homeScore += this.basicRiskCalculation(age, income);
 
-    return homeScore;
+    return this.evaluateScoreResponse(homeScore);
   }
 
-  calculateLifeInsurance(baseScore, income, age, dependents, maritalStatus) {
+  evaluateLifeInsurance(baseScore, income, age, dependents, maritalStatus) {
     let lifeScore = 0 + baseScore;
 
     if (age > 60) {
@@ -105,7 +93,7 @@ class RiskService {
 
     lifeScore += this.basicRiskCalculation(age, income);
 
-    return lifeScore;
+    return this.evaluateScoreResponse(lifeScore);
   }
 
   basicRiskCalculation(age, income) {
@@ -123,6 +111,18 @@ class RiskService {
     }
 
     return score;
+  }
+
+  evaluateScoreResponse(score) {
+    if (score < 1) {
+      return 'economic';
+    }
+
+    if (score >= 1 && score <= 2) {
+      return 'regular';
+    }
+
+    return 'responsible';
   }
 }
 
