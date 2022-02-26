@@ -1,8 +1,19 @@
-# NodeJS Base
-This project has been created to help initiate a project using NodeJS. 
-It has a simple structure that is meant to be changed for your needs. 
+# Risk API
+An `express` API application to evaluate the insurance risk based on user data.
+
+## Running
+Run application
+`npm start`
+
+Run on development
+`npm run dev`
+
+Run tests
+`npm run test`
+
+Run lint
+`npm run lint`
 
 ## TODO
-- Add Sequelize ORM and create models to exemplify the database layer, this should be used to decrease coupling.
-- Use the repositories to create the entities from the application using the models from DB.
-- Create unit tests for the first structure.
+ - Refactor the risk rules to use some pattern like `Chain of Responsibility`;
+ - Improve input errors messages;
