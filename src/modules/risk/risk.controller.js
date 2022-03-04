@@ -44,7 +44,7 @@ class RiskController {
           id: house.id,
           ownershipStatus: house.ownership_status,
         })) : [],
-      vehicles: body.vehicles,
+      vehicles: body.vehicles && body.vehicles.length ? body.vehicles : [],
     };
 
     const analyseResult = this.riskService.analyze(personData);

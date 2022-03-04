@@ -20,16 +20,16 @@ class RiskService {
       };
     }
 
-    const autoInsurance = vehicles.map((vehicle) => ({
+    const autoInsurance = vehicles && vehicles.length ? vehicles.map((vehicle) => ({
       id: vehicle.id,
       plan: this.evaluateAutoInsurance(baseScore, vehicle, age, income),
-    }));
+    })) : 'ineligible';
     // eslint-disable-next-line max-len
     const disabilityInsurance = this.evaluateDisabilityInsurance(baseScore, income, age, houses, dependents, maritalStatus, riskQuestions[1]);
-    const homeInsurance = houses.map((house) => ({
+    const homeInsurance = houses && houses.length ? houses.map((house) => ({
       id: house.id,
       plan: this.evaluateHomeInsurance(baseScore, house, age, income),
-    }));
+    })) : 'ineligible';
     const lifeInsurance = this.evaluateLifeInsurance(baseScore, income, age, dependents, maritalStatus);
     // eslint-disable-next-line max-len
     const umbrellaInsurance = this.evaluateUmbrellaInsurance(baseScore, autoInsurance, disabilityInsurance, homeInsurance, lifeInsurance, age, income);
@@ -46,8 +46,8 @@ class RiskService {
 
   evaluateUmbrellaInsurance(baseScore, autoInsurance, disabilityInsurance, homeInsurance, lifeInsurance, age, income) {
     if (![disabilityInsurance, lifeInsurance].includes('economic')
-      && !autoInsurance.find((a) => a.plan === 'economic')
-      && !homeInsurance.find((h) => h.plan === 'economic')) {
+      && (Array.isArray(autoInsurance) && !autoInsurance.find((a) => a.plan === 'economic'))
+      && (Array.isArray(homeInsurance) && !homeInsurance.find((h) => h.plan === 'economic'))) {
       return 'ineligible';
     }
 

@@ -8,13 +8,17 @@ describe('RiskService tests', () => {
     personData = {
       age: 35,
       dependents: 2,
+      houses: [
+        { id: 1, ownershipStatus: 'owned' },
+      ],
       income: 50,
       maritalStatus: 'married',
       riskQuestions: [1, 1, 0],
-      house: {
-        ownershipStatus: 'owned',
-      },
-      vehicle: { year: 2018 },
+      vehicles: [
+        { id: 1, year: 2019 },
+        { id: 2, year: 2010 },
+        { id: 3, year: 2012 },
+      ],
     };
   });
 
@@ -22,9 +26,11 @@ describe('RiskService tests', () => {
     const insuranceAnalysis = riskService.analyze(personData);
 
     expect(insuranceAnalysis.auto).toBeDefined();
-    expect(typeof insuranceAnalysis.auto).toBe('string');
+    expect(Array.isArray(insuranceAnalysis.auto)).toBeTruthy();
+    expect(insuranceAnalysis.auto.length).toBe(3);
     expect(insuranceAnalysis.home).toBeDefined();
-    expect(typeof insuranceAnalysis.home).toBe('string');
+    expect(Array.isArray(insuranceAnalysis.home)).toBeTruthy();
+    expect(insuranceAnalysis.home.length).toBe(1);
     expect(insuranceAnalysis.disability).toBeDefined();
     expect(typeof insuranceAnalysis.disability).toBe('string');
     expect(insuranceAnalysis.life).toBeDefined();
@@ -34,17 +40,17 @@ describe('RiskService tests', () => {
   it('should return correct evaluated insurance when ', () => {
     const insuranceAnalysis = riskService.analyze(personData);
 
-    expect(insuranceAnalysis.auto).toBe('regular');
-    expect(insuranceAnalysis.disability).toBe('regular');
-    expect(insuranceAnalysis.home).toBe('regular');
+    expect(insuranceAnalysis.auto[0].plan).toBe('regular');
+    expect(insuranceAnalysis.disability).toBe('responsible');
+    expect(insuranceAnalysis.home[0].plan).toBe('regular');
     expect(insuranceAnalysis.life).toBe('responsible');
   });
 
   // eslint-disable-next-line max-len
   it('should return ineligible for disability, auto, and home insurance when doesnt have income, vehicles or houses respectively', () => {
     personData.income = 0;
-    delete personData.vehicle;
-    delete personData.house;
+    delete personData.vehicles;
+    delete personData.houses;
 
     const insuranceAnalysis = riskService.analyze(personData);
 
@@ -82,10 +88,10 @@ describe('RiskService tests', () => {
 
   it('should increase risk when house ownershipStatus is mortgaged ', () => {
     personData.riskQuestions = [1, 1, 1];
-    personData.house.ownershipStatus = 'mortgaged';
+    personData.houses[0].ownershipStatus = 'mortgaged';
     const insuranceAnalysis = riskService.analyze(personData);
 
-    expect(insuranceAnalysis.home).toBe('responsible');
+    expect(insuranceAnalysis.home[0].plan).toBe('responsible');
   });
 
   it('should return reduce 2 when age is less than 30 for basic risk calculation ', () => {
