@@ -4,7 +4,7 @@
 class RiskService {
   /**
    * @name analyze
-   * @return {{auto: string, disability: string, life: string, home: string}}
+   * @return {{auto: (*|string), umbrella: (string|*), disability: (string|*), life: (string|*)}}
    */
   analyze({
     age, dependents, houses, income, maritalStatus, riskQuestions, vehicles,
@@ -20,34 +20,61 @@ class RiskService {
       };
     }
 
-    const autoInsurance = vehicles && vehicles.length ? vehicles.map((vehicle) => ({
+    const autoInsurances = vehicles && vehicles.length ? vehicles.map((vehicle) => ({
       id: vehicle.id,
       plan: this.evaluateAutoInsurance(baseScore, vehicle, age, income),
     })) : 'ineligible';
     // eslint-disable-next-line max-len
     const disabilityInsurance = this.evaluateDisabilityInsurance(baseScore, income, age, houses, dependents, maritalStatus, riskQuestions[1]);
-    const homeInsurance = houses && houses.length ? houses.map((house) => ({
-      id: house.id,
-      plan: this.evaluateHomeInsurance(baseScore, house, age, income),
-    })) : 'ineligible';
-    const lifeInsurance = this.evaluateLifeInsurance(baseScore, income, age, dependents, maritalStatus);
-    // eslint-disable-next-line max-len
-    const umbrellaInsurance = this.evaluateUmbrellaInsurance(baseScore, autoInsurance, disabilityInsurance, homeInsurance, lifeInsurance, age, income);
 
-    return {
-      auto: autoInsurance,
-      // eslint-disable-next-line max-len
+    let homeInsurances = [];
+    const renterInsurance = [];
+    if (houses && houses.length) {
+      houses.forEach((house) => {
+        if (house.ownershipStatus === 'rented') {
+          renterInsurance.push({
+            id: house.id,
+            plan: this.evaluateHomeInsurance(baseScore, house, age, income),
+          });
+        } else {
+          homeInsurances.push({
+            id: house.id,
+            plan: this.evaluateHomeInsurance(baseScore, house, age, income),
+          });
+        }
+      });
+    } else {
+      homeInsurances = 'ineligible';
+    }
+
+    const lifeInsurance = this.evaluateLifeInsurance(baseScore, income, age, dependents, maritalStatus);
+
+    const evaluatedInsurances = {
+      auto: autoInsurances,
       disability: disabilityInsurance,
-      home: homeInsurance,
       life: lifeInsurance,
-      umbrella: umbrellaInsurance,
     };
+
+    if (homeInsurances.length) {
+      evaluatedInsurances.home = homeInsurances;
+    }
+
+    if (renterInsurance.length) {
+      evaluatedInsurances.renters = renterInsurance;
+    }
+
+    // eslint-disable-next-line max-len
+    evaluatedInsurances.umbrella = this.evaluateUmbrellaInsurance(baseScore, autoInsurances, disabilityInsurance, homeInsurances, renterInsurance, lifeInsurance, age, income);
+
+    return evaluatedInsurances;
   }
 
-  evaluateUmbrellaInsurance(baseScore, autoInsurance, disabilityInsurance, homeInsurance, lifeInsurance, age, income) {
+  // eslint-disable-next-line max-len
+  evaluateUmbrellaInsurance(baseScore, autoInsurance, disabilityInsurance, homeInsurance, renterInsurance, lifeInsurance, age, income) {
     if (![disabilityInsurance, lifeInsurance].includes('economic')
       && (Array.isArray(autoInsurance) && !autoInsurance.find((a) => a.plan === 'economic'))
-      && (Array.isArray(homeInsurance) && !homeInsurance.find((h) => h.plan === 'economic'))) {
+      && (Array.isArray(homeInsurance) && !homeInsurance.find((h) => h.plan === 'economic'))
+      && (Array.isArray(renterInsurance) && !renterInsurance.find((h) => h.plan === 'economic'))) {
       return 'ineligible';
     }
 
