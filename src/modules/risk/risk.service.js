@@ -22,7 +22,7 @@ class RiskService {
 
     const autoInsurance = this.evaluateAutoInsurance(baseScore, vehicle, age, income);
     // eslint-disable-next-line max-len
-    const disabilityInsurance = this.evaluateDisabilityInsurance(baseScore, income, age, house, dependents, maritalStatus);
+    const disabilityInsurance = this.evaluateDisabilityInsurance(baseScore, income, age, house, dependents, maritalStatus, riskQuestions[1]);
     const homeInsurance = this.evaluateHomeInsurance(baseScore, house, age, income);
     const lifeInsurance = this.evaluateLifeInsurance(baseScore, income, age, dependents, maritalStatus);
     // eslint-disable-next-line max-len
@@ -66,11 +66,15 @@ class RiskService {
     return this.evaluateScoreResponse(autoScore);
   }
 
-  evaluateDisabilityInsurance(baseScore, income, age, house, dependents, maritalStatus) {
+  evaluateDisabilityInsurance(baseScore, income, age, house, dependents, maritalStatus, secondRiskAnswer) {
     let disabilityScore = 0 + baseScore;
 
     if (income === 0 || age > 60) {
       return 'ineligible';
+    }
+
+    if (secondRiskAnswer) {
+      disabilityScore += 2;
     }
 
     if (house?.ownershipStatus === 'mortgaged') {
