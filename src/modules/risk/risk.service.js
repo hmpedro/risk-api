@@ -10,6 +10,15 @@ class RiskService {
     age, dependents, house, income, maritalStatus, riskQuestions, vehicle,
   }) {
     const baseScore = riskQuestions.reduce((sum, currentVal) => sum + currentVal, 0);
+    if (baseScore === 0 && income < 25000) {
+      return {
+        auto: 'ineligible',
+        disability: 'ineligible',
+        home: 'ineligible',
+        life: 'ineligible',
+      };
+    }
+
     return {
       auto: this.evaluateAutoInsurance(baseScore, vehicle, age, income),
       // eslint-disable-next-line max-len
