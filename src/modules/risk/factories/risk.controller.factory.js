@@ -16,11 +16,17 @@ const analyzeSchema = {
       type: 'integer',
       minimum: 0,
     },
-    house: {
-      type: 'object',
-      properties: {
-        ownership_status: {
-          type: 'string',
+    houses: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          id: {
+            type: 'integer',
+          },
+          ownership_status: {
+            type: 'string',
+          },
         },
       },
     },
@@ -40,12 +46,18 @@ const analyzeSchema = {
       maxItems: 3,
       minItems: 3,
     },
-    vehicle: {
-      type: 'object',
-      properties: {
-        year: {
-          type: 'integer',
-          maximum: new Date(Date.now()).getFullYear() + 1,
+    vehicles: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          id: {
+            type: 'integer',
+          },
+          year: {
+            type: 'integer',
+            maximum: new Date(Date.now()).getFullYear() + 1,
+          },
         },
       },
     },

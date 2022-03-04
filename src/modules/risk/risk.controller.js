@@ -39,10 +39,12 @@ class RiskController {
       income: body.income,
       maritalStatus: body.marital_status,
       riskQuestions: body.risk_questions,
-      house: body.house ? {
-        ownershipStatus: body.house.ownership_status,
-      } : null,
-      vehicle: body.vehicle,
+      houses: body.houses && body.houses.length
+        ? body.houses.map((house) => ({
+          id: house.id,
+          ownershipStatus: house.ownership_status,
+        })) : [],
+      vehicles: body.vehicles,
     };
 
     const analyseResult = this.riskService.analyze(personData);

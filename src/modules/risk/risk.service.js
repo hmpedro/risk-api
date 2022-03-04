@@ -7,7 +7,7 @@ class RiskService {
    * @return {{auto: string, disability: string, life: string, home: string}}
    */
   analyze({
-    age, dependents, house, income, maritalStatus, riskQuestions, vehicle,
+    age, dependents, houses, income, maritalStatus, riskQuestions, vehicles,
   }) {
     const baseScore = riskQuestions.reduce((sum, currentVal) => sum + currentVal, 0);
     if (baseScore === 0 && income < 25000) {
@@ -20,10 +20,16 @@ class RiskService {
       };
     }
 
-    const autoInsurance = this.evaluateAutoInsurance(baseScore, vehicle, age, income);
+    const autoInsurance = vehicles.map((vehicle) => ({
+      id: vehicle.id,
+      plan: this.evaluateAutoInsurance(baseScore, vehicle, age, income),
+    }));
     // eslint-disable-next-line max-len
-    const disabilityInsurance = this.evaluateDisabilityInsurance(baseScore, income, age, house, dependents, maritalStatus, riskQuestions[1]);
-    const homeInsurance = this.evaluateHomeInsurance(baseScore, house, age, income);
+    const disabilityInsurance = this.evaluateDisabilityInsurance(baseScore, income, age, houses, dependents, maritalStatus, riskQuestions[1]);
+    const homeInsurance = houses.map((house) => ({
+      id: house.id,
+      plan: this.evaluateHomeInsurance(baseScore, house, age, income),
+    }));
     const lifeInsurance = this.evaluateLifeInsurance(baseScore, income, age, dependents, maritalStatus);
     // eslint-disable-next-line max-len
     const umbrellaInsurance = this.evaluateUmbrellaInsurance(baseScore, autoInsurance, disabilityInsurance, homeInsurance, lifeInsurance, age, income);
@@ -39,7 +45,9 @@ class RiskService {
   }
 
   evaluateUmbrellaInsurance(baseScore, autoInsurance, disabilityInsurance, homeInsurance, lifeInsurance, age, income) {
-    if (![autoInsurance, disabilityInsurance, homeInsurance, lifeInsurance].includes('economic')) {
+    if (![disabilityInsurance, lifeInsurance].includes('economic')
+      && !autoInsurance.find((a) => a.plan === 'economic')
+      && !homeInsurance.find((h) => h.plan === 'economic')) {
       return 'ineligible';
     }
 
@@ -66,7 +74,7 @@ class RiskService {
     return this.evaluateScoreResponse(autoScore);
   }
 
-  evaluateDisabilityInsurance(baseScore, income, age, house, dependents, maritalStatus, secondRiskAnswer) {
+  evaluateDisabilityInsurance(baseScore, income, age, houses, dependents, maritalStatus, secondRiskAnswer) {
     let disabilityScore = 0 + baseScore;
 
     if (income === 0 || age > 60) {
@@ -77,7 +85,7 @@ class RiskService {
       disabilityScore += 2;
     }
 
-    if (house?.ownershipStatus === 'mortgaged') {
+    if (houses.find((h) => h.ownershipStatus === 'mortgaged')) {
       disabilityScore += 1;
     }
 
