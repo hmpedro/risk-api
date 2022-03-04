@@ -16,16 +16,37 @@ class RiskService {
         disability: 'ineligible',
         home: 'ineligible',
         life: 'ineligible',
+        umbrella: 'ineligible',
       };
     }
 
+    const autoInsurance = this.evaluateAutoInsurance(baseScore, vehicle, age, income);
+    // eslint-disable-next-line max-len
+    const disabilityInsurance = this.evaluateDisabilityInsurance(baseScore, income, age, house, dependents, maritalStatus);
+    const homeInsurance = this.evaluateHomeInsurance(baseScore, house, age, income);
+    const lifeInsurance = this.evaluateLifeInsurance(baseScore, income, age, dependents, maritalStatus);
+    // eslint-disable-next-line max-len
+    const umbrellaInsurance = this.evaluateUmbrellaInsurance(baseScore, autoInsurance, disabilityInsurance, homeInsurance, lifeInsurance, age, income);
+
     return {
-      auto: this.evaluateAutoInsurance(baseScore, vehicle, age, income),
+      auto: autoInsurance,
       // eslint-disable-next-line max-len
-      disability: this.evaluateDisabilityInsurance(baseScore, income, age, house, dependents, maritalStatus),
-      home: this.evaluateHomeInsurance(baseScore, house, age, income),
-      life: this.evaluateLifeInsurance(baseScore, income, age, dependents, maritalStatus),
+      disability: disabilityInsurance,
+      home: homeInsurance,
+      life: lifeInsurance,
+      umbrella: umbrellaInsurance,
     };
+  }
+
+  evaluateUmbrellaInsurance(baseScore, autoInsurance, disabilityInsurance, homeInsurance, lifeInsurance, age, income) {
+    if (![autoInsurance, disabilityInsurance, homeInsurance, lifeInsurance].includes('economic')) {
+      return 'ineligible';
+    }
+
+    let umbrellaScore = 0 + baseScore;
+    umbrellaScore += this.basicRiskCalculation(age, income);
+
+    return this.evaluateScoreResponse(umbrellaScore);
   }
 
   evaluateAutoInsurance(baseScore, vehicle, age, income) {
